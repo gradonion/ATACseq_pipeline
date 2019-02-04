@@ -35,16 +35,20 @@ Edit the `config.yaml` file to set your specific configurations, such as:
 
 #### 3. Run the Snakemake pipeline
 
-Add  `Snakefile` and the edited configuration file `config.yaml` to your project directory, and run the following commands (or submit the commands as a job on a computing cluster)
+Add  `Snakefile` and the edited configuration file `config.yaml` to your project directory, and run the following commands:
 
 ```bash
 source activate peakcalling
 snakemake --configfile config.yaml
 ```
+
+Or, you can submit the job on SLURM, or even adding a cluster configuration file (e.g. `cluster.json`), which allows you to specify the computational resource (such as memory usage) allocated for each snakemake rule. 
+
 #### 4. Output
 
 There will be 3 output folders: 
 `bedfiles` stores all the .bed files converted from .bam files, `peakcalling` stores the peak calling outputs, and `count` stores peak counts for each sample.
 
 The final peak count per sample matrix is stored in `count/{celltype}_per_sample_count.txt`.
+
 

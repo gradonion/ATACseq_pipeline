@@ -4,13 +4,13 @@ snakemake \
     -kp \
     --ri \
     -j 20 \
-    --cluster-config /project2/xinhe/ATAC-seq_10252018/test_pipeline/ATACseq_pipeline/cluster.json \
+    --cluster-config cluster.json \
     -c "sbatch \
         --mem={cluster.mem} \
         --nodes={cluster.n} \
         --tasks-per-node={cluster.tasks} \
-        --partition=mengjiechen \
-	--account=pi-mengjiechen \
+        --partition=partition_name \
+	--account=account_name \
         --job-name={cluster.name} \
 	--output={cluster.logfile}" \
     $*
