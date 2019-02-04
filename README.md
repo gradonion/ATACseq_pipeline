@@ -1,8 +1,10 @@
-## ATAC-seq_pipeline
+## ATAC-seq Pipeline
 
 This ATAC-seq Snakemake pipeline is designed to process ATAC-seq data from bam files to a peak count matrix: peakcalling is conducted on reads pooled from all samples (suppose that they are alll of the same cell type), and then the number of reads that fall into each peak is tabulated for each sample, resulting in a peak by sample matrix.
 
 Peak calling is conducted by program MACS2 (Model-based Analysis of ChIP-Seq, Zhang et al), which is based on python 2.7, and thus couldn't be installed in the virtual environment (in conflict with the installation of snakemake which requires python 3). The user has to install MACS2 separately and provide its executable directory in the `config.yaml` file.
+
+The dependencies between jobs are demonstrated in a directed graph `pipeline_dag.svg` (using 2 bam files as input data).
 
 Each experiment differs and the pipeline might need to be adjusted to accommodate such individual differences (such as adding read alignment steps to obtain bam files).
 
@@ -50,5 +52,4 @@ There will be 3 output folders:
 `bedfiles` stores all the .bed files converted from .bam files, `peakcalling` stores the peak calling outputs, and `count` stores peak counts for each sample.
 
 The final peak count per sample matrix is stored in `count/{celltype}_per_sample_count.txt`.
-
 
