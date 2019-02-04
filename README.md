@@ -53,3 +53,8 @@ There will be 3 output folders:
 
 The final peak count per sample matrix is stored in `count/{celltype}_per_sample_count.txt`.
 
+A directed acyclic graph illustrating the dependencies between jobs can be generated using:
+
+```bash
+snakemake --configfile config.yaml --dag | dot -Tsvg > pipeline_dag.svg
+```
