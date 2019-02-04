@@ -1,0 +1,14 @@
+#Snakemake configuration file
+
+# Directory where the read data are stored, recommend absolute directory
+bam_dir: bamfiles/
+
+#Cell type you want to name:
+celltype: 'DN'
+
+#macs2 peakcalling parameters:
+macs2_dir: /home/zhouyf/.conda/envs/python2/bin/macs2
+peak_fdr: 0.01
+small_length: 1000
+large_length: 10000
+

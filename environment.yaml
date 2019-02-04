@@ -1,0 +1,19 @@
+# module load Anaconda3
+# conda env create --file environment.yaml
+# source activate peakcalling
+# source deactivate
+
+name:
+    peakcalling
+channels:
+    - bioconda
+    - conda-forge
+    - defaults
+    - r
+dependencies:
+    - python=3
+    - snakemake
+    - fastqc
+    - subread
+    - samtools
+    - bedtools
