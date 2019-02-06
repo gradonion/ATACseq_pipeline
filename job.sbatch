@@ -12,7 +12,6 @@
 
 module load Anaconda3
 source activate peakcalling
-module load java
 #snakemake --configfile config.yaml -j 4
 
 bash Submit_snakemake.sh "-s Snakefile" "--configfile config.yaml" $*

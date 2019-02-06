@@ -27,6 +27,9 @@ dir_log = "log"
 if not os.path.isdir(dir_log):
     os.mkdir(dir_log)
 
+dir_tmp = "tmp"
+if not os.path.isdir(dir_tmp):
+    os.mkdir(dir_tmp)
 
 rule all:
 	input:
@@ -37,30 +40,18 @@ rule align_bam_sort:
 		bam_dir + "{samples}.bam"
 	output:
 		cleanbam_dir + '{samples}.sorted.bam'
-	threads: config['alignment_params']['ncpus']
+	threads: config['sort_params']['ncpus']
 	shell:
 		'samtools sort -@ {threads} -m 4G -o {output} {input}'
 
-rule align_bam_index:
-	input:
-		cleanbam_dir + '{samples}.sorted.bam'
-	output:
-		cleanbam_dir + '{samples}.sorted.bam.bai'
-	shell:
-		'samtools index {input}'
-
-rule remove_duplicated_reads:
+rule remove_duplicates:
 	input:
 		cleanbam_dir + '{samples}.sorted.bam'
 	output:
 		cleanbam_dir + '{samples}.bam'
-	params:
-		config['alignment_params']['clean_cmd']
 	shell:
-		'python scripts/do_remove_dup_reads.py \
-		--i {input} \
-		--o {output} \
-		--cmd "{params[0]}"'
+		"picard MarkDuplicates I={input} O={output} M={output}_metrics.txt -Xmx8G \
+		REMOVE_DUPLICATES=TRUE TMP_DIR={dir_tmp} && samtools index {output}"
 
 rule bam2bed:
 	input:
@@ -83,10 +74,10 @@ rule peakcalling:
 	input:
 		bedfile_dir + celltype + "_pooled.bed.gz"
 	params:
-		macs2_dir = config["macs2_dir"],
-		fdr = config["peak_fdr"],
-		slocal = config["small_length"],
-		llocal = config["large_length"],
+		macs2_dir = config["macs2_params"]["dir"],
+		fdr = config["macs2_params"]["fdr"],
+		slocal = config["macs2_params"]["small_length"],
+		llocal = config["macs2_params"]["large_length"],
 		output_prefix = celltype + "_pooled_cutsite",
 		output_dir = peak_outdir
 	output:

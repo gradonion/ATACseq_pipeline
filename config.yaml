@@ -1,28 +1,24 @@
-#Snakemake configuration file
+## Snakemake configuration file
 
-# Directory where the read data are stored, recommend absolute directory
-bam_dir: bamfiles/
+## Directory where the read data are stored, recommend absolute directory
+bam_dir: yourbamfiles/
 
-#Cell type you want to name:
+## Cell type you want to name:
 celltype: 'DN'
 
-## If the bam files already have been sorted and removed of duplicated reads, give the directory to the following parameter instead
+## If your bam files already have been sorted and removed of duplicated reads, 
+## provide the directory in the following parameter instead
+## otherwise, don't change it
 cleanbam_dir: cleanbam/
 
 ## macs2 peakcalling parameters:
-# need to input the path of executable macs2 tool
-macs2_dir: .../bin/macs2
-peak_fdr: 0.01
-small_length: 1000
-large_length: 10000
+## you need to provide the path of your executable macs2 tool
+macs2_params:
+        dir: yourpath/macs2
+        fdr: 0.01
+        small_length: 1000
+        large_length: 10000
 
-## settings to clean the bam files:
-# need to input the path of executable picard tool
-alignment_params:
+sort_params:
   ncpus: 1
-  clean_cmd: 'java -jar .../picard.jar \
-  MarkDuplicates \
-  I=\{input\} \
-  O=\{output\} \
-  M=\{output\}.metric.txt \
-  REMOVE_DUPLICATES=true'
+

@@ -4,9 +4,9 @@ This ATAC-seq Snakemake pipeline is designed to process ATAC-seq data from bam f
 
 Peak calling is conducted by program MACS2 (Model-based Analysis of ChIP-Seq, Zhang et al), which is based on python 2.7, and thus couldn't be installed in the virtual environment (in conflict with the installation of snakemake which requires python 3). The user has to install MACS2 separately and provide its executable directory in the `config.yaml` file.
 
-The dependencies between jobs are demonstrated in a directed graph `pipeline_dag.svg` (using 2 bam files as input data).
+The dependencies between jobs are demonstrated in a directed graph `pipeline_dag.svg` (when using 2 bam files `DN_01.bam` and `DN_02.bam` as input).
 
-Each experiment differs and the pipeline might need to be adjusted to accommodate such individual differences (such as adding read alignment steps to obtain bam files).
+Each experiment differs and the pipeline might need to be adjusted to accommodate individual differences (such as adding read alignment steps to obtain bam files).
 
 ## Usage
 
@@ -31,9 +31,10 @@ Edit the `config.yaml` file to set your specific configurations, such as:
 
 * `bam_dir`: where all your sample bam files are located
 * `celltype`: what cell type/tissue your samples came from
-* `macs2_dir`: directory of the executable MACS2
-* `peak_fdr`: what fdr level you want to use for MACS2 peak calling
-* ...
+* `cleanbam_dir`: if your bam files already have been sorted and removed of duplicated reads, give your directory instead to skip the cleaning steps, otherwise keep it as the default "cleanbam/"
+* `macs2_params.dir`: path of your executable MACS2
+* `macs2_params.fdr`: what fdr level used in macs2 peak calling
+* `macs2_params.small_length/large_length`: size (bp) of the small/large local windows used in macs2
 
 #### 3. Run the Snakemake pipeline
 
