@@ -6,9 +6,23 @@ bam_dir: bamfiles/
 #Cell type you want to name:
 celltype: 'DN'
 
-#macs2 peakcalling parameters:
-macs2_dir: /home/zhouyf/.conda/envs/python2/bin/macs2
+## If the bam files already have been sorted and removed of duplicated reads, give the directory to the following parameter instead
+cleanbam_dir: cleanbam/
+
+## macs2 peakcalling parameters:
+# need to input the path of executable macs2 tool
+macs2_dir: .../bin/macs2
 peak_fdr: 0.01
 small_length: 1000
 large_length: 10000
 
+## settings to clean the bam files:
+# need to input the path of executable picard tool
+alignment_params:
+  ncpus: 1
+  clean_cmd: 'java -jar .../picard.jar \
+  MarkDuplicates \
+  I=\{input\} \
+  O=\{output\} \
+  M=\{output\}.metric.txt \
+  REMOVE_DUPLICATES=true'

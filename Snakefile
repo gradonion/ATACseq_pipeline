@@ -3,6 +3,7 @@
 import glob
 import os
 
+pd = config["proj_dir"]
 bam_dir = config["bam_dir"]
 celltype = config["celltype"]
 def getNames(dir,exts):
@@ -14,9 +15,10 @@ def getNames(dir,exts):
 		snames.append(name)
 	return(snames)
 # returns sample names contained in a directory with similar files 
-
 samples = getNames(bam_dir,".bam")
+print(samples)
 
+cleanbam_dir = config["cleanbam_dir"]
 bedfile_dir = "bedfiles/"
 peak_outdir = "peakcalling/"
 count_dir = "count/"
@@ -30,13 +32,44 @@ rule all:
 	input:
 		expand(count_dir + "{celltype}_per_sample_count.txt",celltype=celltype)
 
-rule bam2bed:
+rule align_bam_sort:
 	input:
 		bam_dir + "{samples}.bam"
+	output:
+		cleanbam_dir + '{samples}.sorted.bam'
+	threads: config['alignment_params']['ncpus']
+	shell:
+		'samtools sort -@ {threads} -m 4G -o {output} {input}'
+
+rule align_bam_index:
+	input:
+		cleanbam_dir + '{samples}.sorted.bam'
+	output:
+		cleanbam_dir + '{samples}.sorted.bam.bai'
+	shell:
+		'samtools index {input}'
+
+rule remove_duplicated_reads:
+	input:
+		cleanbam_dir + '{samples}.sorted.bam'
+	output:
+		cleanbam_dir + '{samples}.bam'
+	params:
+		config['alignment_params']['clean_cmd']
+	shell:
+		'python scripts/do_remove_dup_reads.py \
+		--i {input} \
+		--o {output} \
+		--cmd "{params[0]}"'
+
+rule bam2bed:
+	input:
+		cleanbam_dir + "{samples}.bam"
 	output:
 		bedfile_dir + "{samples}.sorted.bed"
 	shell:
 		"bedtools bamtobed -i {input} | awk '!($1 ~ /_/) {{print}}' | sort -k1,1V -k2,2n > {output}"
+
 
 rule poolbed:
 	input:
@@ -83,7 +116,7 @@ rule countpersample:
 
 rule countmatrix:
 	input:
-		peak_outdir + celltype + "_pooled_cutsite_peaks.formatted.bed",
+		peak_outdir + celltype + "_pooled_cutsite_peaks.formatted.bed",		
 		expand(count_dir + "{samples}.count", samples=samples)
 	params:
 		header = 'chr'+'\t'+'start'+'\t'+'end'+'\t'+'peak_name'
@@ -92,6 +125,7 @@ rule countmatrix:
 	shell:
 		'''
 		cat <(echo {params.header}) <(cut -f1-4 {input[0]}) > {celltype}_pooled_cutsite_peaks.txt
+		#paste -d'\t' {celltype}_pooled_cutsite_peaks.txt {input[1]} > {output}
 		paste -d'\t' {celltype}_pooled_cutsite_peaks.txt {count_dir}*count > {output}
 		'''
 
