@@ -7,12 +7,20 @@
       "name" : "{rule}-{wildcards}",
       "logfile": "log/snake-{rule}-{wildcards}-%j.out"
     },
+    "align_bam_sort":
+    {
+      "task" : 10
+    }
+    "remove_duplicates":
+    {
+      "mem" : 16000
+    }
     "bam2bed" :
     {
       "mem" : 16000
     },
     "peakcalling" :
     {
-      "mem" : 32000
+      "mem" : 16000
     }
 }

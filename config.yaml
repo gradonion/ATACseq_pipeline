@@ -20,5 +20,5 @@ macs2_params:
         large_length: 10000
 
 sort_params:
-  ncpus: 1
+  ncpus: 10
 
